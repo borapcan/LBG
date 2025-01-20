@@ -39,7 +39,7 @@ class Sublocation(models.Model):
 
 class ModelSpecies(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
-    sublocation = models.OneToOneField(Sublocation, on_delete=models.CASCADE)
+    sublocation = models.ForeignKey(Sublocation, on_delete=models.CASCADE)
     stage_of_life = models.ForeignKey(StageOfLife, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -53,27 +53,53 @@ class ModelSpecies(models.Model):
 # glycan part
 
 
-class MonosaccharideComponent(models.Model):
-    h_num = models.IntegerField()
-    n_num = models.IntegerField()
-    f_num = models.IntegerField()
-    sg_num = models.IntegerField()
-    sn_num = models.IntegerField()
-    phos_num = models.IntegerField()
-    sulph_num = models.IntegerField()
-    unmod_sia = models.IntegerField()
+class MonosaccharideComposition(models.Model):
+    H_num = models.PositiveIntegerField(default=0)  # Hexose (Glu, Gal, Man)
+    N_num = models.PositiveIntegerField(
+        default=0
+    )  # N-acetylhexosamine (GlcNAc, GalNAc)
+    F_num = models.PositiveIntegerField(default=0)  # Fucose
+    P_num = models.PositiveIntegerField(default=0)  # Phosphate
+    T_num = models.PositiveIntegerField(default=0)  # Sulphate
+    A_num = models.PositiveIntegerField(default=0)  # GlcA
+    G_num = models.PositiveIntegerField(default=0)  # Neu5Gc
+    S_num = models.PositiveIntegerField(default=0)  # Neu5Ac
+    E_num = models.PositiveIntegerField(default=0)  # Neu5Ac EE (ethyl esterification)
+    M_num = models.PositiveIntegerField(default=0)  # Neu5Ac MA (methyl amidation)
 
     def __str__(self):
-        return f"H:{self.h_num} N:{self.n_num} F:{self.f_num}"
+        elements = []
+        if self.H_num > 0:
+            elements.append(f"H{self.H_num}")
+        if self.N_num > 0:
+            elements.append(f"N{self.N_num}")
+        if self.F_num > 0:
+            elements.append(f"F{self.F_num}")
+        if self.P_num > 0:
+            elements.append(f"P{self.P_num}")
+        if self.T_num > 0:
+            elements.append(f"T{self.T_num}")
+        if self.A_num > 0:
+            elements.append(f"A{self.A_num}")
+        if self.G_num > 0:
+            elements.append(f"G{self.G_num}")
+        if self.S_num > 0:
+            elements.append(f"S{self.S_num}")
+        if self.E_num > 0:
+            elements.append(f"E{self.E_num}")
+        if self.M_num > 0:
+            elements.append(f"M{self.M_num}")
+
+        return "".join(elements)
 
     class Meta:
-        verbose_name = "Monosaccharide Component"
-        verbose_name_plural = "Monosaccharide Components"
+        verbose_name = "Composition"
+        verbose_name_plural = "Compositions"
 
 
 class DiagnosticFragment(models.Model):
     motif_name = models.CharField(max_length=255)
-    motif_structure = models.TextField(null=True, blank=True)
+    mass = models.FloatField(default=0.00)
     # structure = models.ImageField(
     #    upload_to="images/", null=True, blank=True
     # )
@@ -119,9 +145,8 @@ class Glycan(models.Model):
     structural_resolution = models.ImageField(
         upload_to="images/", null=True, blank=True
     )
-    glycan_name_comp = models.CharField(max_length=255, null=True, blank=True)
     monosaccharide_comp = models.ForeignKey(
-        MonosaccharideComponent, on_delete=models.CASCADE, related_name="glycans"
+        MonosaccharideComposition, on_delete=models.CASCADE, related_name="glycans"
     )
     mass = models.FloatField()
     sialic_derivatization = models.BooleanField(default=False)
@@ -131,7 +156,7 @@ class Glycan(models.Model):
 
     model_species = models.ManyToManyField(ModelSpecies)
     studies = models.ManyToManyField(Study)
-    diagnostic_fragments = models.ManyToManyField(DiagnosticFragment)
+    diagnostic_fragments = models.ManyToManyField(DiagnosticFragment, blank=True)
 
     def __str__(self):
         return f"Glycan {self.id}"
