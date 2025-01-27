@@ -1,3 +1,4 @@
+import string, random
 from django.db import models
 
 
@@ -141,12 +142,21 @@ class Study(models.Model):
         verbose_name_plural = "Studies"
 
 
+def generate_unique_glycan_id():
+    """Generate a unique ID in the format LBG-xxxxx."""
+    while True:
+        glycan_id = f"LBG-{''.join(random.choices(string.ascii_uppercase + string.digits, k=5))}"
+        if not Glycan.objects.filter(id=glycan_id).exists():
+            return glycan_id
+
+
 class Glycan(models.Model):
+    id = models.CharField(max_length=9, primary_key=True, editable=False, unique=True)
     structural_resolution = models.ImageField(
         upload_to="images/", null=True, blank=True
     )
     monosaccharide_comp = models.ForeignKey(
-        MonosaccharideComposition, on_delete=models.CASCADE, related_name="glycans"
+        "MonosaccharideComposition", on_delete=models.CASCADE, related_name="glycans"
     )
     mass = models.FloatField()
     sialic_derivatization = models.BooleanField(default=False)
@@ -154,9 +164,14 @@ class Glycan(models.Model):
     gu_max = models.FloatField()
     gu_min = models.FloatField()
 
-    model_species = models.ManyToManyField(ModelSpecies)
-    studies = models.ManyToManyField(Study)
-    diagnostic_fragments = models.ManyToManyField(DiagnosticFragment, blank=True)
+    model_species = models.ManyToManyField("ModelSpecies")
+    studies = models.ManyToManyField("Study")
+    diagnostic_fragments = models.ManyToManyField("DiagnosticFragment", blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.id = generate_unique_glycan_id()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Glycan {self.id}"
