@@ -102,3 +102,17 @@ id,action_time,object_id,object_repr,action_flag,change_message,content_type_id,
 101,2025-01-27 10:13:54.43639+01,LBG-R5HIJ,Glycan LBG-R5HIJ,1,"[{""added"": {}}]",14,1
 102,2025-01-27 10:16:59.812948+01,LBG-F64OH,Glycan LBG-F64OH,2,"[{""changed"": {""fields"": [""Gu mean"", ""Gu min""]}}]",14,1
 103,2025-01-27 10:21:11.003966+01,LBG-IJ45G,Glycan LBG-IJ45G,2,"[{""changed"": {""fields"": [""Gu max"", ""Gu min""]}}]",14,1
+104,2025-01-27 10:24:19.675876+01,LBG-4BKUR,Glycan LBG-4BKUR,1,"[{""added"": {}}]",14,1
+105,2025-01-27 10:25:29.874759+01,LBG-AC67Y,Glycan LBG-AC67Y,1,"[{""added"": {}}]",14,1
+106,2025-01-27 10:26:30.553762+01,LBG-1UIUW,Glycan LBG-1UIUW,1,"[{""added"": {}}]",14,1
+107,2025-01-27 10:26:54.753288+01,17,H3N5,1,"[{""added"": {}}]",15,1
+108,2025-01-27 10:28:20.801693+01,LBG-2GNTV,Glycan LBG-2GNTV,1,"[{""added"": {}}]",14,1
+109,2025-01-27 10:28:59.212289+01,8,Human - Brain - Cortex - undefined - undefined,1,"[{""added"": {}}]",12,1
+110,2025-01-27 10:29:17.117341+01,4,NaN,2,"[{""changed"": {""fields"": [""Name""]}}]",9,1
+111,2025-01-27 10:29:21.644209+01,2,NaN - undefined,2,"[{""changed"": {""fields"": [""Organ""]}}]",11,1
+112,2025-01-27 10:29:26.292339+01,2,NaN - NaN,2,"[{""changed"": {""fields"": [""Structure""]}}]",11,1
+113,2025-01-27 10:29:31.659846+01,4,NaN - undefined,2,"[{""changed"": {""fields"": [""Stage""]}}]",10,1
+114,2025-01-27 10:29:37.700551+01,6,NaN - NaN - NaN - NaN - undefined,2,[],12,1
+115,2025-01-27 10:29:48.454792+01,4,NaN - NaN,2,"[{""changed"": {""fields"": [""Age""]}}]",10,1
+116,2025-01-27 10:29:50.067369+01,6,NaN - NaN - NaN - NaN - NaN,2,[],12,1
+117,2025-01-27 10:30:21.003614+01,LBG-2GNTV,Glycan LBG-2GNTV,2,"[{""changed"": {""fields"": [""Model species""]}}]",14,1
