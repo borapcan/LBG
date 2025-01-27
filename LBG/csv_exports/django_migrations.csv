@@ -1,0 +1,25 @@
+id,app,name,applied
+1,DB,0001_initial,2025-01-20 11:49:59.634787+01
+2,DB,0002_glycan_glycan_name_comp,2025-01-20 11:49:59.643793+01
+3,DB,0003_alter_monosaccharidecomponent_options_and_more,2025-01-20 11:49:59.654775+01
+4,DB,0004_monosaccharidecomposition_and_more,2025-01-20 11:49:59.696216+01
+5,contenttypes,0001_initial,2025-01-20 11:49:59.705195+01
+6,auth,0001_initial,2025-01-20 11:49:59.756059+01
+7,admin,0001_initial,2025-01-20 11:49:59.772017+01
+8,admin,0002_logentry_remove_auto_add,2025-01-20 11:49:59.780041+01
+9,admin,0003_logentry_add_action_flag_choices,2025-01-20 11:49:59.785985+01
+10,contenttypes,0002_remove_content_type_name,2025-01-20 11:49:59.804515+01
+11,auth,0002_alter_permission_name_max_length,2025-01-20 11:49:59.811465+01
+12,auth,0003_alter_user_email_max_length,2025-01-20 11:49:59.817467+01
+13,auth,0004_alter_user_username_opts,2025-01-20 11:49:59.823465+01
+14,auth,0005_alter_user_last_login_null,2025-01-20 11:49:59.830448+01
+15,auth,0006_require_contenttypes_0002,2025-01-20 11:49:59.831446+01
+16,auth,0007_alter_validators_add_error_messages,2025-01-20 11:49:59.837436+01
+17,auth,0008_alter_user_username_max_length,2025-01-20 11:49:59.849401+01
+18,auth,0009_alter_user_last_name_max_length,2025-01-20 11:49:59.856385+01
+19,auth,0010_alter_group_name_max_length,2025-01-20 11:49:59.863364+01
+20,auth,0011_update_proxy_permissions,2025-01-20 11:49:59.874334+01
+21,auth,0012_alter_user_first_name_max_length,2025-01-20 11:49:59.880356+01
+22,sessions,0001_initial,2025-01-20 11:49:59.889812+01
+23,DB,0005_alter_modelspecies_sublocation,2025-01-20 13:23:17.884917+01
+24,DB,0006_alter_glycan_id,2025-01-27 09:01:37.652715+01

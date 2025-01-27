@@ -1,0 +1,11 @@
+id,structural_resolution,mass,sialic_derivatization,gu_mean,gu_max,gu_min,monosaccharide_comp_id
+2,images/5.96_1276_H3N2F1_MS.png,1276.638,f,5.11,5.96,4.26,1
+1,images/6.09_1210_H3N2P1.png,1210.569,f,5.29,6.09,4.48,2
+6,images/6.16_1559_H3N3F1T1.png,1559.697,f,6.16,6.16,6.16,5
+8,images/6.16_1536_H3N4.png,1536.738,f,5.47,6.2,4.74,7
+9,images/6.26_1438_H4N2F1_MS.png,1438.69,f,5.6,6.26,4.93,8
+10,images/6.37_1682_H3N4F1_MS.png,1692.796,f,6.37,6.37,6.37,9
+5,images/6.16_1479_H3N3F1_MS.png,1479.717,f,5.4,6.16,4.63,4
+4,images/6_hsRBWwT.12_292_H4N2.png,1292.633,f,6.16,6.16,6.16,3
+11,images/6.16_1479_H3N3F1_MS.png,1479.717,f,6.2,6.2,6.2,4
+3,"",1292.633,f,5.335,4.55,6.12,3

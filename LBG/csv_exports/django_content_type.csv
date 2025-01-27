@@ -1,0 +1,16 @@
+id,app_label,model
+1,admin,logentry
+2,auth,permission
+3,auth,group
+4,auth,user
+5,contenttypes,contenttype
+6,sessions,session
+7,DB,diagnosticfragment
+8,DB,lastauthor
+9,DB,species
+10,DB,stageoflife
+11,DB,sublocation
+12,DB,modelspecies
+13,DB,study
+14,DB,glycan
+15,DB,monosaccharidecomposition

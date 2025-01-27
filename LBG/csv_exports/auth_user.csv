@@ -1,0 +1,2 @@
+id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined
+1,pbkdf2_sha256$870000$if8LwaBW6FurSSt1pNxvZh$uWDYjpYsfmn4e+LMPOh1rbIX7Pry1ebkyTzWwhwueUw=,2025-01-20 12:50:42.294512+01,t,admin,"","",admin@admin.admin,t,t,2025-01-20 12:50:32.594347+01
