@@ -100,3 +100,5 @@ id,action_time,object_id,object_repr,action_flag,change_message,content_type_id,
 99,2025-01-27 10:13:06.387838+01,16,H3N3F1T1,1,"[{""added"": {}}]",15,1
 100,2025-01-27 10:13:24.454439+01,LBG-UGU53,Glycan LBG-UGU53,1,"[{""added"": {}}]",14,1
 101,2025-01-27 10:13:54.43639+01,LBG-R5HIJ,Glycan LBG-R5HIJ,1,"[{""added"": {}}]",14,1
+102,2025-01-27 10:16:59.812948+01,LBG-F64OH,Glycan LBG-F64OH,2,"[{""changed"": {""fields"": [""Gu mean"", ""Gu min""]}}]",14,1
+103,2025-01-27 10:21:11.003966+01,LBG-IJ45G,Glycan LBG-IJ45G,2,"[{""changed"": {""fields"": [""Gu max"", ""Gu min""]}}]",14,1
