@@ -2,3 +2,5 @@ id,stage,age
 1,Adult,NaN
 2,Neonate,24h
 3,Neonate,48h
+4,undefined,undefined
+5,Fetal,NaN
