@@ -23,3 +23,4 @@ id,app,name,applied
 22,sessions,0001_initial,2025-01-20 11:49:59.889812+01
 23,DB,0005_alter_modelspecies_sublocation,2025-01-20 13:23:17.884917+01
 24,DB,0006_alter_glycan_id,2025-01-27 09:01:37.652715+01
+25,DB,0007_monosaccharidecomposition_composition_string,2025-01-28 13:01:53.519664+01

@@ -67,8 +67,12 @@ class MonosaccharideComposition(models.Model):
     S_num = models.PositiveIntegerField(default=0)  # Neu5Ac
     E_num = models.PositiveIntegerField(default=0)  # Neu5Ac EE (ethyl esterification)
     M_num = models.PositiveIntegerField(default=0)  # Neu5Ac MA (methyl amidation)
+    composition_string = models.CharField(max_length=255, editable=False, blank=True)
 
     def __str__(self):
+        return self.composition_string
+
+    def save(self, *args, **kwargs):
         elements = []
         if self.H_num > 0:
             elements.append(f"H{self.H_num}")
@@ -90,8 +94,8 @@ class MonosaccharideComposition(models.Model):
             elements.append(f"E{self.E_num}")
         if self.M_num > 0:
             elements.append(f"M{self.M_num}")
-
-        return "".join(elements)
+        self.composition_string = "".join(elements)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Composition"

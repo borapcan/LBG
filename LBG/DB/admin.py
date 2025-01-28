@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import F
 from django.utils.html import format_html
 from .models import (
     Species,
@@ -57,6 +58,7 @@ class MonosaccharideCompositionAdmin(admin.ModelAdmin):
         "S_num",
         "E_num",
         "M_num",
+        "__str__",
     )
     search_fields = (
         "H_num",
@@ -69,6 +71,7 @@ class MonosaccharideCompositionAdmin(admin.ModelAdmin):
         "S_num",
         "E_num",
         "M_num",
+        "composition_string",
     )
 
 
@@ -193,6 +196,7 @@ class GlycanAdmin(admin.ModelAdmin):
         "monosaccharide_comp__S_num",
         "monosaccharide_comp__E_num",
         "monosaccharide_comp__M_num",
+        "monosaccharide_comp__composition_string",
     )
     list_filter = (
         "sialic_derivatization",
