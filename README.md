@@ -78,10 +78,14 @@ The application should now be accessible at `http://127.0.0.1:8000/`.
 3. You can now manage species, glycan compositions, studies, and more.
 
 ### Importing Sample Glycan Data
-A dataset containing **359 glycans** is available in the `csv_exports` folder. To load this data into the application, use:
+To import initial 359 glycan dataset, you can run a custom import script. This script will process and load the data automatically into your database.
+
+For Windows users, navigate to the script’s directory and run it as follows:
 ```sh
-python manage.py loaddata csv_exports/sample_data.json
+python import_all.py
 ```
+This script will import all available glycan v0.9 data into your database. Ensure that the file path to the script is correct before running it. If needed, adjust the path based on where the script is stored on your system.
+
 > **Note:** This repository does not include media files (images) related to glycans. Ensure external image files are added manually if required.
 
 ### Searching and Filtering
