@@ -2,8 +2,9 @@ import string, random
 from django.db import models
 
 
-## species section
+## Species section
 class Species(models.Model):
+    # Represents different species in the database
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -15,6 +16,7 @@ class Species(models.Model):
 
 
 class StageOfLife(models.Model):
+    # Represents different life stages of a species
     stage = models.CharField(max_length=255)
     age = models.CharField(max_length=255)
 
@@ -27,6 +29,7 @@ class StageOfLife(models.Model):
 
 
 class Sublocation(models.Model):
+    # Represents anatomical sublocations within a species
     organ = models.CharField(max_length=255)
     structure = models.CharField(max_length=255)
 
@@ -39,6 +42,7 @@ class Sublocation(models.Model):
 
 
 class ModelSpecies(models.Model):
+    # Links species to a specific sublocation and life stage
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
     sublocation = models.ForeignKey(Sublocation, on_delete=models.CASCADE)
     stage_of_life = models.ForeignKey(StageOfLife, on_delete=models.CASCADE)
@@ -48,13 +52,12 @@ class ModelSpecies(models.Model):
 
     class Meta:
         verbose_name = "Model Species"
-        verbose_name_plural = "Model Species"  # No 'Model Speciess'
+        verbose_name_plural = "Model Species"
 
 
-# glycan part
-
-
+## Glycan-related models
 class MonosaccharideComposition(models.Model):
+    # Stores the composition of a glycan in terms of its monosaccharide content
     H_num = models.PositiveIntegerField(default=0)  # Hexose (Glu, Gal, Man)
     N_num = models.PositiveIntegerField(
         default=0
@@ -67,12 +70,15 @@ class MonosaccharideComposition(models.Model):
     S_num = models.PositiveIntegerField(default=0)  # Neu5Ac
     E_num = models.PositiveIntegerField(default=0)  # Neu5Ac EE (ethyl esterification)
     M_num = models.PositiveIntegerField(default=0)  # Neu5Ac MA (methyl amidation)
-    composition_string = models.CharField(max_length=255, editable=False, blank=True)
+    composition_string = models.CharField(
+        max_length=255, editable=False, blank=True
+    )  # Auto-generated composition string
 
     def __str__(self):
         return self.composition_string
 
     def save(self, *args, **kwargs):
+        # Generates a string representation of the composition before saving
         elements = []
         if self.H_num > 0:
             elements.append(f"H{self.H_num}")
@@ -103,11 +109,9 @@ class MonosaccharideComposition(models.Model):
 
 
 class DiagnosticFragment(models.Model):
+    # Stores information about diagnostic fragments used in analysis
     motif_name = models.CharField(max_length=255)
     mass = models.FloatField(default=0.00)
-    # structure = models.ImageField(
-    #    upload_to="images/", null=True, blank=True
-    # )
 
     def __str__(self):
         return self.motif_name
@@ -118,6 +122,7 @@ class DiagnosticFragment(models.Model):
 
 
 class LastAuthor(models.Model):
+    # Stores details about the last author of a study
     full_name = models.CharField(max_length=255)
     affiliation = models.CharField(max_length=255)
 
@@ -130,12 +135,11 @@ class LastAuthor(models.Model):
 
 
 class Study(models.Model):
+    # Represents a research study including publication details
     title = models.CharField(max_length=255)
     journal = models.CharField(max_length=255)
     year = models.IntegerField()
     doi = models.CharField(max_length=255, unique=True)
-
-    # Changed to ManyToManyField
     last_authors = models.ManyToManyField(LastAuthor, related_name="studies")
 
     def __str__(self):
@@ -146,8 +150,8 @@ class Study(models.Model):
         verbose_name_plural = "Studies"
 
 
+# Generates a unique glycan ID in the format LBG-xxxxx
 def generate_unique_glycan_id():
-    """Generate a unique ID in the format LBG-xxxxx."""
     while True:
         glycan_id = f"LBG-{''.join(random.choices(string.ascii_uppercase + string.digits, k=5))}"
         if not Glycan.objects.filter(id=glycan_id).exists():
@@ -155,6 +159,7 @@ def generate_unique_glycan_id():
 
 
 class Glycan(models.Model):
+    # Represents a glycan with structural, mass, and associated study data
     id = models.CharField(max_length=9, primary_key=True, editable=False, unique=True)
     structural_resolution = models.ImageField(
         upload_to="images/", null=True, blank=True
