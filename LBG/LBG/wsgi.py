@@ -1,5 +1,5 @@
 """
-WSGI config for MicroGlycoDB project.
+WSGI config for LGB project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MicroGlycoDB.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "LBG.settings")
 
 application = get_wsgi_application()
