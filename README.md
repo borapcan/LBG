@@ -69,7 +69,7 @@ Follow the prompts to set up an admin username and password.
 ```sh
 python manage.py runserver
 ```
-The application should now be accessible at `http://127.0.0.1:8000/`.
+The application should now be accessible at `http://127.0.0.1:8000/admin`.
 
 ## Using the Application
 ### Accessing the Admin Interface
