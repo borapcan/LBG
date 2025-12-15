@@ -1,5 +1,5 @@
-import psycopg2
 import os
+import psycopg2
 
 # Database connection details
 conn = psycopg2.connect(
@@ -14,64 +14,90 @@ cursor = conn.cursor()
 # Directory containing all exported CSV files
 csv_dir = "./csv_exports"
 
+# Set schema you use (Django default on Postgres is usually "public")
+SCHEMA = "public"
 
-def table_exists(table_name):
+
+def existing_tables(schema=SCHEMA):
     cursor.execute(
         """
-        SELECT EXISTS (
-            SELECT FROM information_schema.tables 
-            WHERE table_name = %s
-        );
-    """,
-        (table_name,),
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = %s AND table_type = 'BASE TABLE';
+        """,
+        (schema,),
     )
-    return cursor.fetchone()[0]
+    return {row[0] for row in cursor.fetchall()}
 
 
-def table_is_empty(table_name):
-    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-    count = cursor.fetchone()[0]
-    return count == 0
+def table_is_empty(schema, table_name):
+    # Use schema-qualified name; quote identifiers to be safe
+    cursor.execute(f'SELECT COUNT(*) FROM "{schema}"."{table_name}"')
+    return cursor.fetchone()[0] == 0
+
+
+def resolve_table_name(csv_stem, tables_set):
+    """
+    Try to map a CSV filename stem to an actual table name.
+    - exact match
+    - case-insensitive match
+    - CamelCase -> snake_case match
+    """
+    if csv_stem in tables_set:
+        return csv_stem
+
+    lower_map = {t.lower(): t for t in tables_set}
+    if csv_stem.lower() in lower_map:
+        return lower_map[csv_stem.lower()]
+
+    # CamelCase -> snake_case
+    snake = "".join(["_" + c.lower() if c.isupper() else c for c in csv_stem]).lstrip("_")
+    if snake in tables_set:
+        return snake
+    if snake.lower() in lower_map:
+        return lower_map[snake.lower()]
+
+    return None
 
 
 try:
-    # Loop through each CSV file in the directory
-    for csv_file in os.listdir(csv_dir):
-        original_table_name = os.path.splitext(csv_file)[
-            0
-        ]  # Extract table name from file name
+    tables = existing_tables(SCHEMA)
 
-        # Convert CamelCase to snake_case (e.g., DiagnosticFragment to diagnostic_fragment)
-        table_name = "".join(
-            ["_" + c.lower() if c.isupper() else c for c in original_table_name]
-        ).lstrip("_")
+    if not os.path.isdir(csv_dir):
+        raise FileNotFoundError(f"CSV directory not found: {os.path.abspath(csv_dir)}")
 
-        # Prepend 'db_' to the table name (assuming 'db' is your app name)
-        django_table_name = f"db_{table_name}"
-
-        csv_file_path = os.path.join(csv_dir, csv_file)
-
-        print(f"Checking {django_table_name}...")
-
-        if not table_exists(django_table_name):
-            print(f"Table {django_table_name} does not exist. Skipping...")
+    for csv_file in sorted(os.listdir(csv_dir)):
+        if not csv_file.lower().endswith(".csv"):
             continue
 
-        if table_is_empty(django_table_name):
-            print(f"Restoring {django_table_name} from {csv_file_path}...")
+        csv_stem = os.path.splitext(csv_file)[0]
+        csv_file_path = os.path.join(csv_dir, csv_file)
+
+        table_name = resolve_table_name(csv_stem, tables)
+
+        print(f"Checking CSV '{csv_file}' -> table '{table_name}'...")
+
+        if not table_name:
+            print(f"No matching table found for '{csv_stem}'. Skipping...")
+            continue
+
+        if table_is_empty(SCHEMA, table_name):
+            print(f"Restoring {SCHEMA}.{table_name} from {csv_file_path}...")
             with open(csv_file_path, "r", encoding="utf-8") as f:
                 cursor.copy_expert(
-                    f'COPY "{django_table_name}" FROM STDIN WITH CSV HEADER', f
+                    f'COPY "{SCHEMA}"."{table_name}" FROM STDIN WITH CSV HEADER',
+                    f,
                 )
-            print(f"Successfully restored {django_table_name}")
+            print(f"Successfully restored {SCHEMA}.{table_name}")
         else:
-            print(f"Skipping {django_table_name} as it already contains data")
+            print(f"Skipping {SCHEMA}.{table_name} (already contains data)")
 
-    # Commit all changes
     conn.commit()
+
 except Exception as e:
     print("An error occurred while restoring tables:", e)
     conn.rollback()
+
 finally:
     cursor.close()
     conn.close()
