@@ -38,7 +38,39 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configure PostgreSQL Database
-Ensure PostgreSQL is running and update the `DATABASES` section in `settings.py`:
+
+Ensure PostgreSQL is installed and running, then configure Django to connect to it.
+
+#### 4.1 Install PostgreSQL
+Download and install the **latest PostgreSQL version** from the official EnterpriseDB distribution:
+
+https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+
+During installation:
+- Ensure **pgAdmin 4** is selected (enabled by default)
+- Remember the **postgres superuser password**, as it will be required later
+
+After installation, start PostgreSQL and open **pgAdmin 4**.
+
+---
+
+#### 4.2 Create the database in pgAdmin 4
+
+1. Open **pgAdmin 4**
+2. Connect to your local PostgreSQL server (e.g. `PostgreSQL XX`)
+3. Right-click **Databases** → **Create** → **Database**
+4. Set:
+   - **Database name:** `DB`
+   - **Owner:** `postgres`
+5. Click **Save**
+
+The database `DB` should now appear in the list.
+
+---
+
+#### 4.3 Update Django database settings (based on your DB setup)
+
+Update the `DATABASES` section in `settings.py` to match your local PostgreSQL setup:
 
 ```python
 DATABASES = {
@@ -51,7 +83,7 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-```
+
 
 ### 5. Apply Migrations
 ```sh
