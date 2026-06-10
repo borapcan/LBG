@@ -1,46 +1,43 @@
 from django.contrib import admin
-from django.db.models import F
 from django.utils.html import format_html
 from .models import (
-    Species,
-    StageOfLife,
-    Sublocation,
+    Tissue,
+    OntogenicStage,
     ModelSpecies,
     MonosaccharideComposition,
-    DiagnosticFragment,
     Study,
     LastAuthor,
     Glycan,
 )
 
 
-# Admin configuration for Species model
-@admin.register(Species)
-class SpeciesAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
-    search_fields = ("name",)
+# Admin configuration for Tissue model (was Sublocation)
+@admin.register(Tissue)
+class TissueAdmin(admin.ModelAdmin):
+    list_display = ("id", "organ", "structure", "uberon_id")
+    search_fields = ("organ", "structure", "uberon_id")
 
 
-# Admin configuration for StageOfLife model
-@admin.register(StageOfLife)
-class StageOfLifeAdmin(admin.ModelAdmin):
+# Admin configuration for OntogenicStage model (was StageOfLife)
+@admin.register(OntogenicStage)
+class OntogenicStageAdmin(admin.ModelAdmin):
     list_display = ("id", "stage", "age")
     search_fields = ("stage", "age")
 
 
-# Admin configuration for Sublocation model
-@admin.register(Sublocation)
-class SublocationAdmin(admin.ModelAdmin):
-    list_display = ("id", "organ", "structure")
-    search_fields = ("organ", "structure")
-
-
 # Admin configuration for ModelSpecies model
+# (the old standalone Species model is now merged into this one)
 @admin.register(ModelSpecies)
 class ModelSpeciesAdmin(admin.ModelAdmin):
-    list_display = ("id", "species", "sublocation", "stage_of_life")
-    search_fields = ("species__name", "sublocation__organ", "stage_of_life__stage")
-    list_filter = ("species", "stage_of_life")
+    list_display = ("id", "species_name", "species_taxid", "tissue", "stage")
+    search_fields = (
+        "species_name",
+        "species_taxid",
+        "taxid",
+        "tissue__organ",
+        "stage__stage",
+    )
+    list_filter = ("species_name", "stage")
 
 
 # Admin configuration for MonosaccharideComposition model
@@ -53,8 +50,7 @@ class MonosaccharideCompositionAdmin(admin.ModelAdmin):
         "F_num",
         "P_num",
         "T_num",
-        "A_num",
-        "G_num",
+        "G_num",  # A_num removed
         "S_num",
         "E_num",
         "M_num",
@@ -63,16 +59,10 @@ class MonosaccharideCompositionAdmin(admin.ModelAdmin):
     search_fields = ("composition_string",)
 
 
-# Admin configuration for DiagnosticFragment model
-@admin.register(DiagnosticFragment)
-class DiagnosticFragmentAdmin(admin.ModelAdmin):
-    list_display = ("id", "motif_name", "mass")
-    search_fields = ("motif_name", "mass")
-
-
 # Admin configuration for LastAuthor model
 @admin.register(LastAuthor)
 class LastAuthorAdmin(admin.ModelAdmin):
+    list_display = ("id", "full_name", "affiliation")
     search_fields = ("full_name", "affiliation")
 
 
@@ -91,18 +81,23 @@ class StudyAdmin(admin.ModelAdmin):
     authors_list.short_description = "Authors"
 
 
-# Custom filter for filtering Glycan records based on associated species
+# Custom filter for filtering Glycan records based on associated species.
+# Species name now lives on ModelSpecies, so we list the distinct names there.
 class SpeciesFilter(admin.SimpleListFilter):
     title = "Species"
     parameter_name = "species"
 
     def lookups(self, request, model_admin):
-        species = Species.objects.all()
-        return [(s.id, s.name) for s in species]
+        names = (
+            ModelSpecies.objects.order_by("species_name")
+            .values_list("species_name", flat=True)
+            .distinct()
+        )
+        return [(name, name) for name in names]
 
     def queryset(self, request, queryset):
         if self.value():
-            return queryset.filter(model_species__species__id=self.value())
+            return queryset.filter(model_species__species_name=self.value()).distinct()
         return queryset
 
 
@@ -175,19 +170,28 @@ class GlycanAdmin(admin.ModelAdmin):
         "id",
         "monosaccharide_composition_display",
         "mass",
-        "sialic_derivatization",
+        "theoretical_mass",
+        "brain_specific",
+        "sialic_acid_derivatization",
         "gu_mean",
         "gu_max",
         "gu_min",
         "display_image",
     )
-    search_fields = ("monosaccharide_comp__composition_string",)
+    search_fields = (
+        "monosaccharide_comp__composition_string",
+        "glytoucan_id",
+        "glycosmos_id",
+        "glyconnect_id",
+    )
     list_filter = (
-        "sialic_derivatization",
+        "brain_specific",
+        "sialic_acid_derivatization",
+        SpeciesFilter,
         GURangeFilter,
         MassRangeFilter,
     )
-    filter_horizontal = ("model_species", "studies", "diagnostic_fragments")
+    filter_horizontal = ("model_species", "studies")  # diagnostic_fragments removed
 
     def monosaccharide_composition_display(self, obj):
         """Displays the composition string of the associated MonosaccharideComposition."""
@@ -196,11 +200,11 @@ class GlycanAdmin(admin.ModelAdmin):
     monosaccharide_composition_display.short_description = "Monosaccharide Composition"
 
     def display_image(self, obj):
-        """Displays a thumbnail of the glycan's structural resolution image."""
-        if obj.structural_resolution:
+        """Displays a thumbnail of the glycan's graphical (SNFG) structure image."""
+        if obj.graphical_structure:
             return format_html(
                 '<img src="{}" width="100" height="100" style="object-fit:contain;"/>',
-                obj.structural_resolution.url,
+                obj.graphical_structure.url,
             )
         return "No Image"
 
